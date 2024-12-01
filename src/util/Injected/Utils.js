@@ -577,6 +577,7 @@ exports.LoadUtils = () => {
                     await window.WWebJS.getChannelMetadata(chatId);
                     chat = await window.Store.NewsletterCollection.find(chatWid);
                 }
+                chat.isChannel = true;
             } catch (err) {
                 chat = null;
             }
@@ -634,9 +635,9 @@ exports.LoadUtils = () => {
 
         const model = chat.serialize();
         model.isGroup = false;
-        model.isMuted = chat.mute?.expiration !== 0;
+        model.isMuted = chat.muteExpiration == 0 ? false : true;
         if (isChannel) {
-            model.isChannel = window.Store.ChatGetters.getIsNewsletter(chat);
+            model.isChannel = chat.isNewsletter;
         } else {
             model.formattedTitle = chat.formattedTitle;
         }
@@ -654,6 +655,7 @@ exports.LoadUtils = () => {
         }
 
         if (chat.newsletterMetadata) {
+            model.isChannel = true;
             const newsletterMetadata = window.Store.NewsletterMetadataCollection || window.Store.WAWebNewsletterMetadataCollection;
             await newsletterMetadata.update(chat.id);
             model.channelMetadata = chat.newsletterMetadata.serialize();
