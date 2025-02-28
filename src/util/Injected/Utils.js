@@ -663,7 +663,8 @@ exports.LoadUtils = () => {
             model.isReadOnly = chat.groupMetadata.announce;
         }
 
-        if (chat.newsletterMetadata) {
+        isChannel = chat.id.server === 'newsletter';
+        if (isChannel) {
             model.isChannel = true;
             const newsletterMetadata = window.Store.NewsletterMetadataCollection || window.Store.WAWebNewsletterMetadataCollection;
             await newsletterMetadata.update(chat.id);
