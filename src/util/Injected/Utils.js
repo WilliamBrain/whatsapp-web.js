@@ -654,7 +654,7 @@ exports.LoadUtils = () => {
             model.formattedTitle = chat.formattedTitle;
         }
 
-        if (chat.groupMetadata) {
+        if (chat.groupMetadata && window.Store.GroupMetadata) {
             model.isGroup = true;
             const chatWid = window.Store.WidFactory.createWid(chat.id._serialized);
             const groupMetadata = window.Store.GroupMetadata || window.Store.WAWebGroupMetadataCollection;
@@ -667,7 +667,7 @@ exports.LoadUtils = () => {
         }
 
         isChannel = chat.id.server === 'newsletter';
-        if (isChannel) {
+        if (isChannel && window.Store.NewsletterMetadataCollection){
             model.isChannel = true;
             const newsletterMetadata = window.Store.NewsletterMetadataCollection || window.Store.WAWebNewsletterMetadataCollection;
             await newsletterMetadata.update(chat.id);
