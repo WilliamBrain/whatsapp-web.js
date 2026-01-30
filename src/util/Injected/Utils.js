@@ -661,11 +661,11 @@ exports.LoadUtils = () => {
             model.formattedTitle = chat.formattedTitle;
         }
 
-        if (chat.groupMetadata && window.Store.GroupMetadata) {
+        const groupMetadataStore = window.Store.GroupMetadata || window.Store.WAWebGroupMetadataCollection;
+        if (chat.groupMetadata && groupMetadataStore) {
             model.isGroup = true;
             const chatWid = window.Store.WidFactory.createWid(chat.id._serialized);
-            const groupMetadata = window.Store.GroupMetadata || window.Store.WAWebGroupMetadataCollection;
-            await groupMetadata.update(chatWid);
+            await groupMetadataStore.update(chatWid);
             chat.groupMetadata.participants._models
                 .filter(x => x.id?._serialized?.endsWith('@lid'))
                 .forEach(x => x.contact?.phoneNumber && (x.id = x.contact.phoneNumber));
