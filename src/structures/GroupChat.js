@@ -76,14 +76,27 @@ class GroupChat extends Chat {
      * @returns {Promise<Object.<string, AddParticipantsResult>|string>} Returns an object with the resulting data or an error message as a string
      */
     async addParticipants(participantIds, options = {}) {
+        // [WAHA-DEBUG] Log before entering evaluate
+        console.log('[WAHA-DEBUG] GroupChat.addParticipants called with:', JSON.stringify(participantIds));
         return await this.client.pupPage.evaluate(async (groupId, participantIds, options) => {
             const { sleep = [250, 500], autoSendInviteV4 = true, comment = '' } = options;
             const participantData = {};
 
             !Array.isArray(participantIds) && (participantIds = [participantIds]);
+            // [WAHA-DEBUG] Log participantIds inside evaluate
+            console.log('[WAHA-DEBUG] addParticipants evaluate - groupId:', groupId, 'participantIds:', JSON.stringify(participantIds));
+
+            // [WAHA-DEBUG] Check each participant before createWid
+            for (let i = 0; i < participantIds.length; i++) {
+                console.log(`[WAHA-DEBUG] participantIds[${i}]:`, participantIds[i], 'type:', typeof participantIds[i]);
+            }
+
             const groupWid = window.Store.WidFactory.createWid(groupId);
             const group = window.Store.Chat.get(groupWid) || (await window.Store.Chat.find(groupWid));
-            const participantWids = participantIds.map((p) => window.Store.WidFactory.createWid(p));
+            const participantWids = participantIds.map((p) => {
+                console.log('[WAHA-DEBUG] Creating WID for:', p);
+                return window.Store.WidFactory.createWid(p);
+            });
 
             const errorCodes = {
                 default: 'An unknown error occupied while adding a participant',
