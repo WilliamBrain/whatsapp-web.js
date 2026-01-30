@@ -648,6 +648,13 @@ exports.LoadUtils = () => {
         const model = chat.serialize();
         model.isGroup = false;
         model.isMuted = chat.muteExpiration == 0 ? false : true;
+
+        // [WAHA-DEBUG] Log Store availability for group detection
+        console.log('[WAHA-DEBUG] getChatModel for:', chat.id?._serialized);
+        console.log('[WAHA-DEBUG] chat.groupMetadata exists:', !!chat.groupMetadata);
+        console.log('[WAHA-DEBUG] window.Store.GroupMetadata exists:', !!window.Store.GroupMetadata);
+        console.log('[WAHA-DEBUG] window.Store.WAWebGroupMetadataCollection exists:', !!window.Store.WAWebGroupMetadataCollection);
+
         if (isChannel) {
             model.isChannel = chat.isNewsletter;
         } else {
@@ -686,6 +693,9 @@ exports.LoadUtils = () => {
         delete model.msgs;
         delete model.msgUnsyncedButtonReplyMsgs;
         delete model.unsyncedButtonReplies;
+
+        // [WAHA-DEBUG] Log final isGroup value
+        console.log('[WAHA-DEBUG] Final model.isGroup:', model.isGroup, 'model.isChannel:', model.isChannel);
 
         return model;
     };
